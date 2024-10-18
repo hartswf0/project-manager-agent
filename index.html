@@ -132,13 +132,37 @@
             background-color: #3498db;
             color: white;
         }
+        #how-made-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #how-made-button:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <button id="how-made-button" onclick="window.location.href='lesson.html'">How This App is Made</button>
         <h1>Project Management Assistant</h1>
+        
+        <!-- =========================== LESSON 1: API Key Security =========================== -->
+        <!-- To improve user experience and security, we implemented a client-side API key validation system. 
+             This ensures that the API key entered is valid before any requests are made to the OpenAI API. -->
         <input type="password" id="api-key-input" placeholder="Enter your OpenAI API key">
         <button id="test-api-key">Test API Key</button>
+        <!-- ================================================================================= -->
+
+        <!-- =========================== LESSON 2: Project Phase Navigation =========================== -->
+        <!-- The project phases are divided into distinct sections. Each phase helps guide the user through the development process. 
+             The UI allows users to easily navigate between the different stages of their project, providing relevant support at each phase. -->
         <div id="project-phases">
             <div class="phase" data-phase="brainstorm">Brainstorm</div>
             <div class="phase" data-phase="architecture">Architecture</div>
@@ -146,6 +170,11 @@
             <div class="phase" data-phase="development">Development</div>
             <div class="phase" data-phase="testing">Testing</div>
         </div>
+        <!-- =========================================================================================== -->
+
+        <!-- =========================== LESSON 3: Chat Container & User Input =========================== -->
+        <!-- The chat container handles the interaction between the user and the assistant. 
+             Users can type messages and interact with the AI assistant, which helps them through each project phase. -->
         <div id="chat-container">
             <div id="chat-messages"></div>
             <div id="user-input">
@@ -153,6 +182,8 @@
                 <button id="send-button">Send</button>
             </div>
         </div>
+        <!-- ============================================================================================ -->
+
         <div id="console-output"></div>
         <div class="about">
             <h2>About This Project Management Assistant</h2>
@@ -168,6 +199,9 @@
     </div>
 
     <script>
+        // =========================== LESSON 4: Defining Key Elements ===========================
+        // JavaScript code that sets up event listeners and handles the core logic of the application.
+        // This includes selecting key elements and managing user interactions, such as sending messages and switching phases.
         const chatMessages = document.getElementById('chat-messages');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
@@ -178,6 +212,7 @@
 
         let currentPhase = '';
 
+        // Event listeners for sending messages, testing API key, and switching project phases.
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
@@ -190,19 +225,30 @@
             }
         });
 
+        // =========================== LESSON 5: Setting Active Phase ===========================
+        // Highlights the current project phase and sends a system message to inform the user.
+        // This helps the user understand which phase they are currently working on and provides context-specific guidance.
         function setActivePhase(phase) {
             currentPhase = phase;
             document.querySelectorAll('.phase').forEach(el => el.classList.remove('active'));
             document.querySelector(`[data-phase="${phase}"]`).classList.add('active');
             addMessageToChat('System', `Switched to ${phase} phase. How can I assist you with this phase of your project?`);
         }
+        // ========================================================================================
 
+        // =========================== LESSON 6: Logging Messages to Console ===========================
+        // Logs messages to the console output and appends them to the UI for better user feedback.
+        // This is useful for both debugging and providing transparency to the user about the internal actions of the application.
         function log(message) {
             console.log(message);
             consoleOutput.textContent += message + '\n';
             consoleOutput.scrollTop = consoleOutput.scrollHeight;
         }
+        // =============================================================================================
 
+        // =========================== LESSON 7: API Key Validation ===========================
+        // Tests the provided API key to ensure it is valid before proceeding with API requests.
+        // This prevents unnecessary API calls with incorrect credentials, improving efficiency and user experience.
         async function testApiKey() {
             const apiKey = apiKeyInput.value.trim();
             if (!apiKey) {
@@ -227,7 +273,11 @@
                 log(`Error testing API key: ${error.message}`);
             }
         }
+        // ======================================================================================
 
+        // =========================== LESSON 8: Sending Messages to API ===========================
+        // Sends user messages to the OpenAI API and handles the response.
+        // This is the core functionality where the assistant interacts with the user and provides valuable feedback.
         async function sendMessage() {
             const message = messageInput.value.trim();
             const apiKey = apiKeyInput.value.trim();
@@ -272,14 +322,22 @@
                 addMessageToChat('Assistant', 'Sorry, there was an error processing your request.');
             }
         }
+        // ========================================================================================
 
+        // =========================== LESSON 9: Adding Messages to Chat ===========================
+        // Adds messages from the user or assistant to the chat container.
+        // This keeps track of the conversation and ensures continuity, making the interaction more natural for the user.
         function addMessageToChat(sender, message) {
             const messageElement = document.createElement('div');
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+        // ==========================================================================================
 
+        // =========================== LESSON 10: Dynamic System Prompts ===========================
+        // Generates a tailored system prompt based on the current project phase for better AI responses.
+        // This customization ensures that the assistant provides the most relevant and useful guidance for each specific phase of the project.
         function getSystemPrompt() {
             const basePrompt = `You are an AI assistant specialized in guiding teams through the process of developing technical projects. Your primary mission is to help teams plan, organize, and execute their development projects effectively. You have expertise in project management, web development, API integration, and various programming languages. Provide clear, concise, and actionable advice tailored to the team's current project phase and specific needs. Break down complex tasks into manageable steps and encourage best practices in coding, project management, and accessibility throughout the development process.`;
             
@@ -306,6 +364,7 @@
 
             return basePrompt + ' ' + phaseSpecificPrompt;
         }
+        // ==========================================================================================
     </script>
 </body>
 </html>
